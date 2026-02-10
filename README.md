@@ -12,7 +12,10 @@ Demostrar la viabilidad técnica de migrar desde una arquitectura monolítica ha
 
 ## 🏗️ **Diagrama de Arquitectura**
 
-![Arquitectura ABC Company](arquitectura/diagrama-arquitectura.png)
+![Arquitectura ABC Company]
+
+
+![arquitectura](https://github.com/user-attachments/assets/69817662-ba63-413d-9e3e-9bcaccfca274)
 
 ### **Vista General**
 ```
