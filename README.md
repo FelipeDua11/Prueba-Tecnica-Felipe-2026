@@ -373,12 +373,7 @@ MIT License - Ver archivo [LICENSE](LICENSE) para detalles completos.
 
 ---
 
-## 📞 **Contacto**
 
-- **Proyecto**: ABC Company Platform
-- **Autor**: Tu Nombre
-- **Email**: tu-email@ejemplo.com
-- **GitHub**: https://github.com/tu-usuario/abc-company
 
 ---
 
