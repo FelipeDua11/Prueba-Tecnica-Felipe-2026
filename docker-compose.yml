@@ -1,0 +1,159 @@
+services:
+  # PostgreSQL for Usuarios Service
+  postgres-usuarios:
+    image: postgres:15-alpine
+    container_name: postgres-usuarios
+    environment:
+      POSTGRES_DB: usuarios_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_usuarios_data:/var/lib/postgresql/data
+    networks:
+      - abc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL for Pagos Service
+  postgres-pagos:
+    image: postgres:15-alpine
+    container_name: postgres-pagos
+    environment:
+      POSTGRES_DB: pagos_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_pagos_data:/var/lib/postgresql/data
+    networks:
+      - abc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB for Pedidos Service
+  mongodb-pedidos:
+    image: mongo:latest
+    container_name: mongodb-pedidos
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_pedidos_data:/data/db
+    networks:
+      - abc-network
+    environment:
+      MONGO_INITDB_DATABASE: pedidos_db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Usuarios Service
+  usuarios-service:
+    build:
+      context: ./backend/usuarios-service/UsuariosService
+      dockerfile: Dockerfile
+    container_name: usuarios-service
+    ports:
+      - "5001:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres-usuarios;Database=usuarios_db;Username=postgres;Password=password
+    depends_on:
+      postgres-usuarios:
+        condition: service_healthy
+    networks:
+      - abc-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/users/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Pedidos Service
+  pedidos-service:
+    build:
+      context: ./backend/pedidos-service/PedidosService
+      dockerfile: Dockerfile
+    container_name: pedidos-service
+    ports:
+      - "5002:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoSettings__ConnectionString=mongodb://mongodb-pedidos:27017
+      - MongoSettings__DatabaseName=pedidos_db
+    depends_on:
+      mongodb-pedidos:
+        condition: service_healthy
+    networks:
+      - abc-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/orders/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Pagos Service
+  pagos-service:
+    build:
+      context: ./backend/pagos-service/PagosService
+      dockerfile: Dockerfile
+    container_name: pagos-service
+    ports:
+      - "5003:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres-pagos;Database=pagos_db;Username=postgres;Password=password
+    depends_on:
+      postgres-pagos:
+        condition: service_healthy
+    networks:
+      - abc-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/api/payments/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway (Nginx)
+  api-gateway:
+    image: nginx:alpine
+    container_name: api-gateway
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - usuarios-service
+      - pedidos-service
+      - pagos-service
+    networks:
+      - abc-network
+    restart: unless-stopped
+
+volumes:
+  postgres_usuarios_data:
+    driver: local
+  postgres_pagos_data:
+    driver: local
+  mongodb_pedidos_data:
+    driver: local
+
+networks:
+  abc-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

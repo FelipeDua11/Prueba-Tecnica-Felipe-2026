@@ -1,0 +1,48 @@
+# .NET
+**/[Dd]ebug/
+**/[Dd]ebugPublic/
+**/[Rr]eleases/
+**/[Rr]eleases/
+**/[Rr]eleases*/
+**/*.[Cc]ache/
+**/*.[Pp]db/
+**/*.[Bb]in/
+**/*.[Oo]bj/
+**/*.[Ll]og/
+**/*.[Ll]ogs/
+**/*.user
+**/*.suo
+**/*.userosscache
+**/*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+docker-compose.yml
+Dockerfile*
+docker-compose*.yml
+
+# Documentation
+README.md
+docs/
+
+# Scripts
+scripts/
