@@ -145,8 +145,8 @@ abc-company/
 
 ### **1. Clonar el Repositorio**
 ```bash
-git clone https://github.com/tu-usuario/abc-company.git
-cd abc-company
+git clone https://github.com/FelipeDua11/Prueba-Tecnica-Felipe-2026.git
+
 ```
 
 ### **2. Construir y Levantar Todos los Servicios**
