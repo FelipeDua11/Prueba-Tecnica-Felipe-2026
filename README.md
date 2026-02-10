@@ -17,6 +17,13 @@ Demostrar la viabilidad técnica de migrar desde una arquitectura monolítica ha
 
 ![arquitectura](https://github.com/user-attachments/assets/69817662-ba63-413d-9e3e-9bcaccfca274)
 
+
+
+Draw.io
+
+<img width="936" height="553" alt="Screenshot 2026-02-10 at 11 39 59 AM" src="https://github.com/user-attachments/assets/c1761cc2-02c5-4d09-b910-f6125672a3cf" />
+
+
 ### **Vista General**
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
